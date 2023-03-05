@@ -1,6 +1,6 @@
 import { PICTURE_COUNT, LIKE_MIN_COUNT, LIKE_MAX_COUNT, COMMENT_COUNT, DESCRIPTIONS } from './const.js';
 
-import { getRandomInteger, getRandomArrayElement } from './random-functions';
+import { getRandomInteger, getRandomArrayElement } from './random-functions.js';
 
 import { createComment } from './functions-comment.js';
 

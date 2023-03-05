@@ -1,6 +1,6 @@
 import { AVATAR_COUNT, NAMES, MESSAGES, } from './const.js';
 
-import { getRandomInteger, getRandomArrayElement } from './random-functions';
+import { getRandomInteger, getRandomArrayElement } from './random-functions.js';
 
 const createIdGenerator = () => {
   let lastGeneratedId = 0;
