@@ -20,6 +20,7 @@ export const renderThumbnails = (pictures) => {
     const thumbnail = createThumbnail(picture);
     fragment.append(thumbnail);
   });
+
+  document.querySelector('.pictures').appendChild(fragment);
 };
 
-renderThumbnails ();
