@@ -1,7 +1,5 @@
-import { createPicture, getPictures } from './functions-picture.js';
+import { getPictures } from './picture.js';
 
-import {renderThumbnails} from './thumbnail.js';
+import { renderThumbnails } from './thumbnail.js';
 
-createPicture ();
-getPictures ();
-renderThumbnails ();
+renderThumbnails(getPictures());
