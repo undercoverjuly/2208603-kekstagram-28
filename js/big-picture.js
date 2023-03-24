@@ -24,15 +24,13 @@ const onClose = (evt) => {
   }
 };
 
-export const openBigPicture = (post) => {
+export const openBigPicture = (picture) => {
   bigPictureElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
-  bigPictureCommentLoad.classList.add('hidden');
-  bigPictureCommentsCount.classList.add('hidden');
 
-  bigPictureImage.src = post.url;
-  bigPictureDescription.textContent = post.description;
-  bigPictureLikesCount.textContent = post.likes;
+  bigPictureImage.src = picture.url;
+  bigPictureDescription.textContent = picture.description;
+  bigPictureLikesCount.textContent = picture.likes;
 
   const bigPictureCommentElement = document.querySelector('.social__comment').cloneNode(true);
 
@@ -40,13 +38,37 @@ export const openBigPicture = (post) => {
     bigPictureCommentsElement.removeChild(bigPictureCommentsElement.firstChild);
   }
 
-  post.comments.forEach((comment) => {
-    const commentElement = bigPictureCommentElement.cloneNode(true);
-    commentElement.querySelector('.social__picture').src = comment.avatar;
-    commentElement.querySelector('.social__picture').alt = comment.name;
-    commentElement.querySelector('.social__text').textContent = comment.message;
-    bigPictureCommentsElement.append(commentElement);
-  });
+  let loadingComments = 0;
+  const COMMENTS_PER_PORTION = 5;
+
+  const renderComments = () => {
+    loadingComments += COMMENTS_PER_PORTION;
+
+    const commentsToShow = Math.min(picture.comments.length, loadingComments);
+
+    picture.comments.forEach((comment, index) => {
+      if (index < commentsToShow) {
+        const commentElement = bigPictureCommentElement.cloneNode(true);
+        commentElement.querySelector('.social__picture').src = comment.avatar;
+        commentElement.querySelector('.social__picture').alt = comment.name;
+        commentElement.querySelector('.social__text').textContent = comment.message;
+
+        bigPictureCommentsCount.textContent = `${commentsToShow} из ${picture.comments.length} комментариев`;
+
+        if (loadingComments >= picture.comments.length) {
+          bigPictureCommentLoad.classList.add('hidden');
+          loadingComments = picture.comments.length;
+          bigPictureCommentLoad.removeEventListener('click', renderComments);
+        } else {
+          bigPictureCommentLoad.classList.remove('hidden');
+          bigPictureCommentLoad.addEventListener('click', renderComments);
+        }
+        bigPictureCommentsElement.append(commentElement);
+      }
+    });
+  };
+
+  renderComments();
 
   bigPictureCloseElement.addEventListener('click', closeBigPicture);
 
