@@ -1,15 +1,22 @@
+import { openBigPicture } from './big-picture.js';
+
 const thumbnailTemplate = document
   .querySelector('#picture')
   .content.querySelector('.picture');
 
-const createThumbnail = ({ comments, description, likes, url, id}) => {
+const createThumbnail = (picture) => {
   const thumbnail = thumbnailTemplate.cloneNode(true);
 
-  thumbnail.querySelector('.picture__img').src = url;
-  thumbnail.querySelector('.picture__img').alt = description;
-  thumbnail.querySelector('.picture__comments').textContent = comments.length;
-  thumbnail.querySelector('.picture__likes').textContent = likes;
-  thumbnail.dataset.thumbnailId = id;
+  thumbnail.querySelector('.picture__img').src = picture.url;
+  thumbnail.querySelector('.picture__img').alt = picture.description;
+  thumbnail.querySelector('.picture__comments').textContent = picture.comments.length;
+  thumbnail.querySelector('.picture__likes').textContent = picture.likes;
+  thumbnail.dataset.thumbnailId = picture.id;
+
+  thumbnail.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    openBigPicture(picture);
+  });
 
   return thumbnail;
 };
