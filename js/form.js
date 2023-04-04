@@ -1,5 +1,6 @@
 import { resetScale } from './scale.js';
 import { isEscape } from './util.js';
+import { changeEffects } from './slider.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadOpen = document.querySelector('.img-upload__overlay');
@@ -21,6 +22,7 @@ const closeUploadForm = () => {
   resetScale();
   uploadForm.reset();
   pristine.reset();
+  changeEffects();
   uploadOpen.classList.add('hidden');
   document.body.classList.remove('modal-open');
 };
