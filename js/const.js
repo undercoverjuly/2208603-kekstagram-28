@@ -84,3 +84,5 @@ export const EFFECTS = [
     unit: '',
   }
 ];
+
+export const ALERT_SHOW_TIME = 5000;

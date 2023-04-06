@@ -1,6 +1,8 @@
 import { resetScale } from './scale.js';
 import { isEscape } from './util.js';
 import { changeEffects } from './slider.js';
+import { sendData } from './fetch.js';
+import { showErrorMessage, showSuccessMessage } from './alert.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadOpen = document.querySelector('.img-upload__overlay');
@@ -11,6 +13,7 @@ const HASHTAG_VALID = /^#[a-zа-яё0-9]{1,19}$/i;
 const MAX_HASHTAG_COUNT = 5;
 const textDescription = document.querySelector('.text__description');
 const textHashtags = document.querySelector('.text__hashtags');
+const submitButton = document.querySelector('.img-upload__submit');
 
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
@@ -27,7 +30,7 @@ const closeUploadForm = () => {
   document.body.classList.remove('modal-open');
 };
 
-const onUploadClose = (evt) => {
+export const onUploadClose = (evt) => {
   if (isEscape(evt)) {
     evt.preventDefault();
     closeUploadForm();
@@ -79,12 +82,47 @@ pristine.addValidator(
 
 const onFormSubmit = (evt) => {
   evt.preventDefault();
-  const isValid = pristine.validate();
-  if (isValid) {
-    // console.log('Можно отправлять');
-  } else {
-    // console.log('Нельзя отправлять');
-  }
 };
 
 uploadForm.addEventListener('submit', onFormSubmit);
+
+textHashtags.addEventListener('input', () => {
+  if (pristine.validate()){
+    submitButton.removeAttribute('disabled');
+  } else {
+    submitButton.setAttribute('disabled','disabled');
+  }
+});
+
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Опубликовываю...';
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
+
+export const uploadFormSubmit = (onSuccess) => {
+  uploadForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess();
+          unblockSubmitButton();
+          showSuccessMessage();
+        },
+        () => {
+          unblockSubmitButton();
+          showErrorMessage();
+        },
+        new FormData(evt.target),
+      );
+    }
+  });
+};
