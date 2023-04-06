@@ -1,6 +1,8 @@
 import { resetScale } from './scale.js';
 import { isEscape } from './util.js';
 import { changeEffects } from './slider.js';
+import { sendData } from './fetch.js';
+import { showErrorMessage, showSuccessMessage } from './alert.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadOpen = document.querySelector('.img-upload__overlay');
@@ -11,6 +13,8 @@ const HASHTAG_VALID = /^#[a-zа-яё0-9]{1,19}$/i;
 const MAX_HASHTAG_COUNT = 5;
 const textDescription = document.querySelector('.text__description');
 const textHashtags = document.querySelector('.text__hashtags');
+const submitButton = document.querySelector('.img-upload__submit');
+const effectsPreviewElements = document.querySelectorAll('.effects__preview');
 
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
@@ -27,7 +31,7 @@ const closeUploadForm = () => {
   document.body.classList.remove('modal-open');
 };
 
-const onUploadClose = (evt) => {
+export const onUploadClose = (evt) => {
   if (isEscape(evt)) {
     evt.preventDefault();
     closeUploadForm();
@@ -37,7 +41,16 @@ const onUploadClose = (evt) => {
 
 uploadClose.addEventListener('click', closeUploadForm);
 
-const openUpLoadForm = () => {
+const openUpLoadForm = (evt) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(evt.target.files[0]);
+  reader.addEventListener('load', () => {
+    document.querySelector('.img-upload__preview img').src = reader.result;
+    effectsPreviewElements.forEach((element) => {
+      element.style.backgroundImage = `url(${reader.result})`;
+    });
+  });
+
   uploadOpen.classList.remove('hidden');
   document.body.classList.add('modal-open');
   document.addEventListener('keydown', onUploadClose);
@@ -77,14 +90,40 @@ pristine.addValidator(
   HASHTAG_ERROR
 );
 
-const onFormSubmit = (evt) => {
-  evt.preventDefault();
-  const isValid = pristine.validate();
-  if (isValid) {
-    // console.log('Можно отправлять');
+textHashtags.addEventListener('input', () => {
+  if (pristine.validate()){
+    submitButton.removeAttribute('disabled');
   } else {
-    // console.log('Нельзя отправлять');
+    submitButton.setAttribute('disabled','disabled');
   }
+});
+
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Опубликовываю...';
 };
 
-uploadForm.addEventListener('submit', onFormSubmit);
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
+
+const onSuccess = () => {
+  showSuccessMessage();
+  unblockSubmitButton();
+};
+
+const onFailure = () => {
+  showErrorMessage();
+  unblockSubmitButton();
+};
+
+uploadForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  const isValid = pristine.validate();
+  if (isValid) {
+    blockSubmitButton();
+    sendData(new FormData(evt.target), onSuccess, onFailure);
+  }
+});
