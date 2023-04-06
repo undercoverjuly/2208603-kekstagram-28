@@ -1,3 +1,4 @@
+import { setFilterClick, showImgFilter, sortByDefault } from './filters.js';
 import { showAlert } from './util.js';
 
 const BASE_URL = 'https://28.javascript.pages.academy/kekstagram';
@@ -22,6 +23,9 @@ export const getData = (onSuccess) => {
     })
     .then((generateUserPhotoDescription) => {
       onSuccess(generateUserPhotoDescription);
+      sortByDefault(generateUserPhotoDescription);
+      setFilterClick(generateUserPhotoDescription);
+      showImgFilter();
     })
     .catch(() => {
       showAlert(`${ErrorText.GET_DATA}`);
@@ -30,13 +34,13 @@ export const getData = (onSuccess) => {
 
 export const sendData = (onSuccess, onFailure, body) => {
   fetch(
-    `${BASE_URL}${Route.SEND_DATA}`,
+    `${BASE_URL}${Route.SEND_DATA}1`,
     {
       method: 'POST',
       body,
     },
-  ).then((response) => {
-    if (response.ok) {
+  ).then((responce) => {
+    if (responce.ok) {
       onSuccess();
     } else {
       onFailure(`${ErrorText.SEND_DATA}`);

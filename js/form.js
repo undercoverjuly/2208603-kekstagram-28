@@ -14,6 +14,7 @@ const MAX_HASHTAG_COUNT = 5;
 const textDescription = document.querySelector('.text__description');
 const textHashtags = document.querySelector('.text__hashtags');
 const submitButton = document.querySelector('.img-upload__submit');
+const effectsPreviewElements = document.querySelectorAll('.effects__preview');
 
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
@@ -40,7 +41,16 @@ export const onUploadClose = (evt) => {
 
 uploadClose.addEventListener('click', closeUploadForm);
 
-const openUpLoadForm = () => {
+const openUpLoadForm = (evt) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(evt.target.files[0]);
+  reader.addEventListener('load', () => {
+    document.querySelector('.img-upload__preview img').src = reader.result;
+    effectsPreviewElements.forEach((element) => {
+      element.style.backgroundImage = `url(${reader.result})`;
+    });
+  });
+
   uploadOpen.classList.remove('hidden');
   document.body.classList.add('modal-open');
   document.addEventListener('keydown', onUploadClose);
@@ -80,12 +90,6 @@ pristine.addValidator(
   HASHTAG_ERROR
 );
 
-const onFormSubmit = (evt) => {
-  evt.preventDefault();
-};
-
-uploadForm.addEventListener('submit', onFormSubmit);
-
 textHashtags.addEventListener('input', () => {
   if (pristine.validate()){
     submitButton.removeAttribute('disabled');
@@ -104,25 +108,22 @@ const unblockSubmitButton = () => {
   submitButton.textContent = 'Опубликовать';
 };
 
-export const uploadFormSubmit = (onSuccess) => {
-  uploadForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-
-    const isValid = pristine.validate();
-    if (isValid) {
-      blockSubmitButton();
-      sendData(
-        () => {
-          onSuccess();
-          unblockSubmitButton();
-          showSuccessMessage();
-        },
-        () => {
-          unblockSubmitButton();
-          showErrorMessage();
-        },
-        new FormData(evt.target),
-      );
-    }
-  });
+const onSuccess = () => {
+  showSuccessMessage();
+  unblockSubmitButton();
 };
+
+const onFailure = () => {
+  showErrorMessage();
+  unblockSubmitButton();
+};
+
+uploadForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  const isValid = pristine.validate();
+  if (isValid) {
+    blockSubmitButton();
+    sendData(new FormData(evt.target), onSuccess, onFailure);
+  }
+});
