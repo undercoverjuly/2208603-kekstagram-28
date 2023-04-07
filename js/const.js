@@ -3,6 +3,8 @@ export const AVATAR_COUNT = 6;
 export const LIKE_MIN_COUNT = 15;
 export const LIKE_MAX_COUNT = 200;
 export const COMMENT_COUNT = 20;
+export const ALERT_SHOW_TIME = 5000;
+export const MAX_RANDOM_POSTS = 10;
 
 export const NAMES = [
   'Андрей',
@@ -84,5 +86,3 @@ export const EFFECTS = [
     unit: '',
   }
 ];
-
-export const ALERT_SHOW_TIME = 5000;
