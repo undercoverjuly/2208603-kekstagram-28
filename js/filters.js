@@ -1,7 +1,6 @@
 import { renderThumbnails } from './thumbnail.js';
 import { debounce } from './util.js';
-
-const MAX_RANDOM_POSTS = 10;
+import { MAX_RANDOM_POSTS } from './const.js';
 
 const filters = document.querySelector('.img-filters');
 
