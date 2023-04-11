@@ -12,9 +12,6 @@ const bigPictureCloseElement = document.querySelector('.big-picture__cancel');
 export const closeBigPicture = () => {
   bigPictureElement.classList.add('hidden');
   document.body.classList.remove('modal-open');
-
-  bigPictureCloseElement.removeEventListener('keydown');
-  bigPictureCloseElement.removeEventListener('click');
 };
 
 const onClose = (evt) => {
@@ -23,6 +20,9 @@ const onClose = (evt) => {
     closeBigPicture();
   }
 };
+
+bigPictureCloseElement.removeEventListener('keydown', onClose);
+bigPictureCloseElement.removeEventListener('click', onClose);
 
 export const openBigPicture = (picture) => {
   bigPictureElement.classList.remove('hidden');

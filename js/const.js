@@ -5,6 +5,9 @@ export const LIKE_MAX_COUNT = 200;
 export const COMMENT_COUNT = 20;
 export const ALERT_SHOW_TIME = 5000;
 export const MAX_RANDOM_POSTS = 10;
+export const SCALE_DEFAULT = 100;
+export const MIN_SCALE = 25;
+export const COMPARE_POST_DATA = 0.5;
 
 export const NAMES = [
   'Андрей',

@@ -3,7 +3,7 @@ import { EFFECTS } from './const.js';
 const effectLevelSlider = document.querySelector('.effect-level__slider');
 const effectLevelValue = document.querySelector('.effect-level__value');
 const imgEffectLevel = document.querySelector('.img-upload__effect-level');
-const imgUploadPreview = document.querySelector('.img-upload__preview');
+const imgUploadPreview = document.querySelector('.img-upload__preview img');
 const effects = document.querySelector('.effects');
 
 
@@ -47,11 +47,9 @@ const onChangeEffect = (evt) => {
 
 const onSliderUpdate = () => {
   const sliderValue = effectLevelSlider.noUiSlider.get();
-  if (isDefault()) {
-    imgUploadPreview.style.filter = DEFAULT_EFFECT.style;
-  } else {
-    imgUploadPreview.style.filter = `${chosenEffect.style}(${sliderValue}${chosenEffect.unit})`;
-  }
+  imgUploadPreview.style.filter = isDefault()
+    ? DEFAULT_EFFECT.style
+    : `${chosenEffect.style}(${sliderValue}${chosenEffect.unit})`;
   effectLevelValue.value = sliderValue;
 };
 

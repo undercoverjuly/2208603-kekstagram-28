@@ -34,13 +34,13 @@ export const getData = (onSuccess) => {
 
 export const sendData = (onSuccess, onFailure, body) => {
   fetch(
-    `${BASE_URL}${Route.SEND_DATA}1`,
+    `${BASE_URL}${Route.SEND_DATA}`,
     {
-      method: 'POST',
+      method: 'GET',
       body,
     },
-  ).then((responce) => {
-    if (responce.ok) {
+  ).then((response) => {
+    if (response.ok) {
       onSuccess();
     } else {
       onFailure(`${ErrorText.SEND_DATA}`);

@@ -15,6 +15,7 @@ const textDescription = document.querySelector('.text__description');
 const textHashtags = document.querySelector('.text__hashtags');
 const submitButton = document.querySelector('.img-upload__submit');
 const effectsPreviewElements = document.querySelectorAll('.effects__preview');
+const imgUploadPreview = document.querySelector('.img-upload__preview img');
 
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
@@ -31,11 +32,15 @@ const closeUploadForm = () => {
   document.body.classList.remove('modal-open');
 };
 
+const closeUpload = () => {
+  closeUploadForm();
+  document.removeEventListener('keydown', onUploadClose);
+};
+
 export const onUploadClose = (evt) => {
   if (isEscape(evt)) {
     evt.preventDefault();
-    closeUploadForm();
-    document.removeEventListener('keydown', onUploadClose);
+    closeUpload();
   }
 };
 
@@ -45,7 +50,7 @@ const openUpLoadForm = (evt) => {
   const reader = new FileReader();
   reader.readAsDataURL(evt.target.files[0]);
   reader.addEventListener('load', () => {
-    document.querySelector('.img-upload__preview img').src = reader.result;
+    imgUploadPreview.src = reader.result;
     effectsPreviewElements.forEach((element) => {
       element.style.backgroundImage = `url(${reader.result})`;
     });
@@ -111,11 +116,13 @@ const unblockSubmitButton = () => {
 const onSuccess = () => {
   showSuccessMessage();
   unblockSubmitButton();
+  closeUpload();
 };
 
 const onFailure = () => {
   showErrorMessage();
   unblockSubmitButton();
+  closeUpload();
 };
 
 uploadForm.addEventListener('submit', (evt) => {
