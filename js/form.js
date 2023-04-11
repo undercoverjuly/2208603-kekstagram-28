@@ -131,6 +131,6 @@ uploadForm.addEventListener('submit', (evt) => {
   const isValid = pristine.validate();
   if (isValid) {
     blockSubmitButton();
-    sendData(new FormData(evt.target), onSuccess, onFailure);
+    sendData(onSuccess, onFailure, new FormData(evt.target));
   }
 });
