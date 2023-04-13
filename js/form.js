@@ -32,15 +32,11 @@ const closeUploadForm = () => {
   document.body.classList.remove('modal-open');
 };
 
-const closeUpload = () => {
-  closeUploadForm();
-  document.removeEventListener('keydown', onUploadClose);
-};
-
 export const onUploadClose = (evt) => {
   if (isEscape(evt)) {
     evt.preventDefault();
-    closeUpload();
+    closeUploadForm();
+    document.removeEventListener('keydown', onUploadClose);
   }
 };
 
@@ -116,13 +112,13 @@ const unblockSubmitButton = () => {
 const onSuccess = () => {
   showSuccessMessage();
   unblockSubmitButton();
-  closeUpload();
+  closeUploadForm();
 };
 
 const onFailure = () => {
   showErrorMessage();
   unblockSubmitButton();
-  closeUpload();
+  closeUploadForm();
 };
 
 uploadForm.addEventListener('submit', (evt) => {

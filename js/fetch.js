@@ -36,7 +36,7 @@ export const sendData = (onSuccess, onFailure, body) => {
   fetch(
     `${BASE_URL}${Route.SEND_DATA}`,
     {
-      method: 'GET',
+      method: 'POST',
       body,
     },
   ).then((response) => {
